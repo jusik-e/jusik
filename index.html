@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>평화누리 인사규정 도우미</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary: #1e3a6e;
+    --primary-light: #2e5ba8;
+    --primary-pale: #e8eef8;
+    --bg: #f0f2f7;
+    --surface: #ffffff;
+    --border: #e2e6ef;
+    --text: #1a1d2e;
+    --text-muted: #6b7280;
+    --radius: 20px;
+    --shadow: 0 4px 24px rgba(30,58,110,0.10);
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .wrapper {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 32px);
+    max-height: 780px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  /* Header */
+  .header {
+    background: var(--primary);
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .logo {
+    width: 42px; height: 42px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.3);
+  }
+  .header-text h1 { font-size: 15px; font-weight: 700; color: #fff; }
+  .header-text p { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+  .status { margin-left: auto; display: flex; align-items: center; gap: 5px; }
+  .status-dot { width: 7px; height: 7px; background: #4ade80; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .status-text { font-size: 11px; color: rgba(255,255,255,0.7); }
+
+  /* Chat area */
+  .chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--bg);
+  }
+  .chat::-webkit-scrollbar { width: 3px; }
+  .chat::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .date-pill {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.7);
+    border-radius: 20px;
+    padding: 4px 12px;
+    align-self: center;
+  }
+
+  .msg { display: flex; gap: 8px; align-items: flex-end; }
+  .msg.user { flex-direction: row-reverse; }
+
+  .av {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .av.bot { background: var(--primary); color: #fff; }
+  .av.user { background: #dde3f0; color: var(--primary); }
+
+  .bub-wrap { display: flex; flex-direction: column; gap: 3px; max-width: 80%; }
+  .msg.user .bub-wrap { align-items: flex-end; }
+
+  .bub {
+    padding: 11px 14px;
+    border-radius: 18px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: keep-all;
+  }
+  .bub.bot {
+    background: var(--surface);
+    border-bottom-left-radius: 4px;
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  }
+  .bub.user {
+    background: var(--primary-light);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .time { font-size: 10px; color: var(--text-muted); padding: 0 4px; }
+
+  /* Typing */
+  .typing-dots {
+    display: flex; gap: 4px; padding: 13px 16px;
+    background: var(--surface);
+    border-radius: 18px; border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    width: fit-content;
+  }
+  .typing-dots span {
+    width: 7px; height: 7px;
+    background: #bdc5d9;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: .2s; }
+  .typing-dots span:nth-child(3) { animation-delay: .4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  /* Quick buttons */
+  .quick {
+    flex-shrink: 0;
+    padding: 10px 14px 6px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .quick-label { width: 100%; font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+  .qb {
+    background: var(--primary-pale);
+    border: 1px solid #c5d3ed;
+    color: var(--primary-light);
+    border-radius: 16px;
+    padding: 6px 13px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .qb:hover { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
+
+  /* Input */
+  .input-area {
+    flex-shrink: 0;
+    padding: 12px 14px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: flex-end;
+  }
+  textarea {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    border-radius: 22px;
+    padding: 9px 15px;
+    font-size: 13.5px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    max-height: 100px;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+    transition: border-color .15s;
+  }
+  textarea:focus { border-color: var(--primary-light); background: #fff; }
+  .send-btn {
+    width: 40px; height: 40px;
+    background: var(--primary-light);
+    border: none; border-radius: 50%;
+    color: #fff; font-size: 16px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background .15s; transform: rotate(90deg);
+  }
+  .send-btn:hover { background: var(--primary); }
+  .send-btn:disabled { background: #c5d3ed; cursor: default; }
+
+  @media (max-width: 480px) {
+    body { padding: 0; }
+    .wrapper { border-radius: 0; max-height: 100vh; height: 100vh; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <div class="logo">평</div>
+    <div class="header-text">
+      <h1>인사규정 도우미</h1>
+      <p>취업규칙 · 급여 · 복리후생 · 여비 · 인사</p>
+    </div>
+    <div class="status">
+      <div class="status-dot"></div>
+      <span class="status-text">온라인</span>
+    </div>
+  </div>
+
+  <div class="chat" id="chat">
+    <div class="date-pill">오늘</div>
+    <div class="msg bot">
+      <div class="av bot">평</div>
+      <div class="bub-wrap">
+        <div class="bub bot">안녕하세요! 😊 저는 평화누리 인사규정 도우미예요.
+
+취업규칙, 급여, 복리후생, 여비·교통비, 인사 등 모든 규정에 대해 쉽게 안내해 드려요.
+
+궁금하신 점을 편하게 물어봐 주세요!</div>
+        <span class="time" id="init-time"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick" id="quick">
+    <div class="quick-label">자주 묻는 질문</div>
+    <button class="qb" onclick="sq(this.textContent)">연차휴가 며칠인가요?</button>
+    <button class="qb" onclick="sq(this.textContent)">경조사비 얼마예요?</button>
+    <button class="qb" onclick="sq(this.textContent)">수습기간이 얼마나 돼요?</button>
+    <button class="qb" onclick="sq(this.textContent)">급여는 언제 나와요?</button>
+    <button class="qb" onclick="sq(this.textContent)">정년이 몇 살이에요?</button>
+    <button class="qb" onclick="sq(this.textContent)">출산휴가는 얼마나 되나요?</button>
+  </div>
+
+  <div class="input-area">
+    <textarea id="tb" placeholder="규정에 대해 궁금한 점을 물어보세요..." rows="1"
+      onkeydown="hk(event)" oninput="ar(this)"></textarea>
+    <button class="send-btn" id="sb" onclick="send()">&#9654;</button>
+  </div>
+</div>
+
+<script>
+// 현재 시간 표시
+function nowTime() {
+  return new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+}
+document.getElementById('init-time').textContent = nowTime();
+
+let msgs = [];
+let busy = false;
+
+function ar(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+function hk(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+function sq(t) {
+  document.getElementById('tb').value = t;
+  send();
+}
+function scrollBottom() {
+  const c = document.getElementById('chat');
+  c.scrollTop = c.scrollHeight;
+}
+
+function addMsg(role, text) {
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const av = document.createElement('div');
+  av.className = `av ${role}`;
+  av.textContent = role === 'bot' ? '평' : '나';
+  const wrap = document.createElement('div');
+  wrap.className = 'bub-wrap';
+  const bub = document.createElement('div');
+  bub.className = `bub ${role}`;
+  bub.textContent = text;
+  const time = document.createElement('span');
+  time.className = 'time';
+  time.textContent = nowTime();
+  wrap.appendChild(bub);
+  wrap.appendChild(time);
+  div.appendChild(av);
+  div.appendChild(wrap);
+  chat.appendChild(div);
+  scrollBottom();
+}
+
+function showTyping() {
+  const chat = document.getElementById('chat');
+  const div = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'typ';
+  const av = document.createElement('div');
+  av.className = 'av bot';
+  av.textContent = '평';
+  const dots = document.createElement('div');
+  dots.className = 'typing-dots';
+  dots.innerHTML = '<span></span><span></span><span></span>';
+  div.appendChild(av);
+  div.appendChild(dots);
+  chat.appendChild(div);
+  scrollBottom();
+}
+function rmTyping() { const e = document.getElementById('typ'); if (e) e.remove(); }
+
+async function send() {
+  if (busy) return;
+  const tb = document.getElementById('tb');
+  const txt = tb.value.trim();
+  if (!txt) return;
+  tb.value = '';
+  tb.style.height = 'auto';
+  document.getElementById('quick').style.display = 'none';
+  document.getElementById('sb').disabled = true;
+  busy = true;
+
+  addMsg('user', txt);
+  msgs.push({ role: 'user', content: txt });
+  showTyping();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: msgs })
+    });
+    const data = await res.json();
+    rmTyping();
+    const reply = data.content?.[0]?.text || '답변을 가져오지 못했어요. 다시 시도해 주세요.';
+    msgs.push({ role: 'assistant', content: reply });
+    addMsg('bot', reply);
+  } catch (e) {
+    rmTyping();
+    addMsg('bot', '연결 오류가 발생했어요. 잠시 후 다시 시도해 주세요. 😅');
+  }
+
+  busy = false;
+  document.getElementById('sb').disabled = false;
+}
+</script>
+</body>
+</html>
