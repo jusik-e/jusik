@@ -1,0 +1,14 @@
+{
+  "name": "wineland-chatbot",
+  "version": "1.0.0",
+  "description": "와인랜드 VIP 소믈리에 챗봇",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "ANTHROPIC_API_KEY=여기에키입력 node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
